@@ -19,6 +19,7 @@ public class Sample {
     
     public static void main(String[] args) {
         sample1();
+        System.out.println("-------------------------");
         sample2();
     }
 
@@ -33,8 +34,7 @@ public class Sample {
         int diff = LevenshteinDiff.ldiffAndApply(Modifiers.fromList(origin), target );
         
         System.out.println("new version: "+origin);
-        System.out.println("number of changes: "+diff);
-        System.out.println("-------------------------");
+        System.out.println("number of changes: "+diff); // 3
     }
 
     private static void sample2() {
@@ -43,8 +43,10 @@ public class Sample {
         
         ArrayList<Optional<Integer>> origin = 
                 new ArrayList<>(List.of(1,2,3,4,5,6,7,8,9)
-                .stream().map(o->Optional.of(o)).collect(Collectors.toList())) //convert to list of optionals
-        ;
+                .stream()
+                .map(o->Optional.of(o))
+                .collect(Collectors.toList())
+        ); //convert to list of optionals
         
         List<Integer> target = List.of(1,2,13,4,40,5,6,7,8);
         
@@ -93,6 +95,5 @@ public class Sample {
         
         System.out.println("new version: "+origin);
         System.out.println("number of changes: "+diff);
-        System.out.println("-------------------------");
     }
 }
