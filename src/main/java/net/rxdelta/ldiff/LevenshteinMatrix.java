@@ -6,6 +6,7 @@
 package net.rxdelta.ldiff;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -51,7 +52,7 @@ class LevenshteinMatrix<T,U> {
      * @param newValue list of new items (including skipped)
      * @param skipped number of skipped item, means they were heads of collection and equals in both origin and new item
      */
-    public LevenshteinMatrix(Modifier<T,U> origin, T first, BiPredicate<T, U> equals, List<? extends U> newValue, int skipped) {
+    public LevenshteinMatrix(Iterator<T> origin, T first, BiPredicate<T, U> equals, List<? extends U> newValue, int skipped) {
         this.equals = equals;
         this.skipped = skipped;
         this.values = newValue.subList(skipped, newValue.size());

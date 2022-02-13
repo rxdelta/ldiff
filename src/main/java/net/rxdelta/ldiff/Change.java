@@ -6,6 +6,7 @@
 package net.rxdelta.ldiff;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class Change<U> {
      * @param skipped number of skipped item(s)
      * @return (origin.size() - skipped) number of delete
      */
-    public static <T,U> Collection<Change<U>> deleteAll(Modifier<? extends T, ? extends U> origin, int skipped) {
+    public static <T,U> Collection<Change<U>> deleteAll(Iterator<? extends T> origin, int skipped) {
         Collection<Change<U>> result = new LinkedList<>();
         while (origin.hasNext()) {
             origin.next();
