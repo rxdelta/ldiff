@@ -13,10 +13,11 @@ import java.util.ListIterator;
  * modifiers is work like {@link Iterator}, means they traverse input data by next.
  * whenever it needs to modify the source, either one of {@link #set(java.lang.Object)}, {@link #insert(java.lang.Object)} or {@link #remove() } is called
  * see {@link ListIterator} for more info about update condition
- * @author mostafa
+ * @author Mostafa Nazari rxdelta@gmail.com
  * @param <T> type of origin data
+ * @param <U> type of new data (for insert/update)
  */
-public interface Modifier<T> extends Iterator<T> {
+public interface Modifier<T,U> extends Iterator<T> {
     
     /**
      * reset the Iterator.
@@ -36,21 +37,21 @@ public interface Modifier<T> extends Iterator<T> {
     
     /**
      * update the value of item which is recently calculated by {@link #next()}.
-     * @param t new value, generated from <code>newValue</code> input List
+     * @param t new value, you should convert it <code>T</code> if it is required
      * @see ListIterator#set(java.lang.Object) 
      * @see LevenshteinDiff#ldiff(net.rxdelta.ldiff.Modifier, java.util.function.BiPredicate, java.util.function.Function, java.util.List) for generator
      * 
      */
-    public void set(T t);
+    public void set(U t);
     
     /**
      * insert new item right after the item which is recently calculated by {@link #next()}.
-     * @param t new value, generated from <code>newValue</code> input List
+     * @param t new value, you should convert it <code>T</code> and then insert it
      * @see ListIterator#add(java.lang.Object) for more info about the place where item would be added
      * @see LevenshteinDiff#ldiff(net.rxdelta.ldiff.Modifier, java.util.function.BiPredicate, java.util.function.Function, java.util.List) for generator
      * 
      */
-    public void insert(T t);
+    public void insert(U t);
 
     /**
      * remove the item which is recently calculated by {@link #next()} from collection.

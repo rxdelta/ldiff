@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Implementation of some {@link Modifier}
  * 
- * @author mostafa
+ * @author Mostafa Nazari rxdelta@gmail.com
  */
 public class Modifiers {
     
@@ -23,7 +23,7 @@ public class Modifiers {
      * @param origin Modifiable List, the result would be affected on this list
      * @return Modifier linked to <code>origin</code>
      */
-    public static <T> Modifier<T> fromList(List<T> origin) {
+    public static <T> Modifier<T,T> fromList(List<T> origin) {
         return fromListIterator(() -> origin.listIterator());
     }
     
@@ -33,9 +33,9 @@ public class Modifiers {
      * @param generator a method which create the iterator, during the algorithm it needs to re-generate the iterator when it wants to apply the changes
      * @return Modifier linked to <code>origin</code>
      */
-    public static <T> Modifier<T> fromListIterator(Supplier<ListIterator<T>> generator) {
+    public static <T> Modifier<T,T> fromListIterator(Supplier<ListIterator<T>> generator) {
         
-        return new Modifier<T>() {
+        return new Modifier<T,T>() {
             private ListIterator<T> l = generator.get();
             
             @Override
@@ -78,7 +78,7 @@ public class Modifiers {
      * @param origin collection of input data
      * @return Modifier linked to <code>origin</code>
      */
-    public static <T> Modifier<T> fromListOfList(List<List<T>> origin) {
+    public static <T> Modifier<T,T> fromListOfList(List<List<T>> origin) {
         return fromListOfListIterator( () -> origin.stream().map(i -> i.listIterator()).collect(Collectors.toList()) );
     }
     /**
@@ -87,8 +87,8 @@ public class Modifiers {
      * @param generator a method which create the iterator, during the algorithm it needs to re-generate the iterator when it wants to apply the changes
      * @return Modifier linked to <code>origin</code>
      */
-    public static <T> Modifier<T> fromListOfListIterator(Supplier<List<ListIterator<T>>> generator) {
-        return new Modifier<T>() {
+    public static <T> Modifier<T,T> fromListOfListIterator(Supplier<List<ListIterator<T>>> generator) {
+        return new Modifier<T,T>() {
             
             List<ListIterator<T>> items = generator.get();
             int index = 0;

@@ -50,7 +50,7 @@ public class Sample {
         
         System.out.println("old version: "+origin);
         
-        int diff = LevenshteinDiff.ldiffAndApply(new Modifier<Optional<Integer>>() {
+        int diff = LevenshteinDiff.ldiffAndApply(new Modifier<Optional<Integer>, Integer>() {
             
             ListIterator<Optional<Integer>> it = origin.listIterator();
             Optional<Integer> oldv;
@@ -62,15 +62,15 @@ public class Sample {
             }
 
             @Override
-            public void set(Optional<Integer> t) {
+            public void set(Integer t) {
                 System.out.println("# update item: "+oldv+" -> "+t);
-                it.set(t);
+                it.set(Optional.of(t));
             }
 
             @Override
-            public void insert(Optional<Integer> t) {
+            public void insert(Integer t) {
                 System.out.println("# insert item: "+t+" (after "+oldv);
-                it.add(t);
+                it.add(Optional.of(t));
             }
 
             @Override
@@ -89,7 +89,7 @@ public class Sample {
                 oldv = it.next();
                 return oldv;
             }
-        }, (t,u) -> t.get().equals(u), u -> Optional.of(u), target);
+        }, (t,u) -> t.get().equals(u), target);
         
         System.out.println("new version: "+origin);
         System.out.println("number of changes: "+diff);

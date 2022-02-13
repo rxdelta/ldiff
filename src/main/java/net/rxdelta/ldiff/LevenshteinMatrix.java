@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 /**
  * @param <T> type of origin
- * @param <U> type of new items
+ * @param <U> type of new items (for insert/update)
  * @author Mostafa Nazari rxdelta@gmail.com
  */
 class LevenshteinMatrix<T,U> {
@@ -22,11 +21,6 @@ class LevenshteinMatrix<T,U> {
      * equals function
      */
     BiPredicate<T,U> equals;
-    
-    /**
-     * conver new item to origin item form
-     */
-    Function<U,T> generator;
     
     /**
      * number of items skipped from both origin and new items, this is also indicates the first-equal number of items
@@ -47,20 +41,18 @@ class LevenshteinMatrix<T,U> {
      * [n(origin)+1] * [n(values)+1] cache memory (levenshteint matrix)
      * 
      */
-    LinkedList<Change<T>>[][] cache;
+    LinkedList<Change<U>>[][] cache;
 
     /**
      * create a levenshtein matrix
      * @param origin  origin data (head-equal items are skipped
      * @param first first item of origin data which is skipped
      * @param equals comparator between T and U
-     * @param generator convert U to T
      * @param newValue list of new items (including skipped)
      * @param skipped number of skipped item, means they were heads of collection and equals in both origin and new item
      */
-    public LevenshteinMatrix(Modifier<T> origin, T first, BiPredicate<T, U> equals, Function<U,T> generator, List<? extends U> newValue, int skipped) {
+    public LevenshteinMatrix(Modifier<T,U> origin, T first, BiPredicate<T, U> equals, List<? extends U> newValue, int skipped) {
         this.equals = equals;
-        this.generator = generator;
         this.skipped = skipped;
         this.values = newValue.subList(skipped, newValue.size());
         this.origin = new ArrayList<>();
@@ -89,8 +81,8 @@ class LevenshteinMatrix<T,U> {
      * @param j range: [0 .. n(values)] both inclusive
      * @return chain of minimum changes required to make origin the same as new items. 
      */
-    private LinkedList<Change<T>> getChangeChain(int i, int j) {
-        LinkedList<Change<T>> result = cache[i][j];
+    private LinkedList<Change<U>> getChangeChain(int i, int j) {
+        LinkedList<Change<U>> result = cache[i][j];
         if (result == null) {
             
             if (i == 0) {
@@ -109,16 +101,16 @@ class LevenshteinMatrix<T,U> {
                 if (equals.test(origin.get(i-1), values.get(j-1))) {
                     result = getChangeChain(i-1, j-1);
                 } else {
-                    LinkedList<Change<T>> left = getChangeChain(i, j-1);
-                    LinkedList<Change<T>> top = getChangeChain(i-1, j);
-                    LinkedList<Change<T>> corner = getChangeChain(i-1, j-1);
+                    LinkedList<Change<U>> left = getChangeChain(i, j-1);
+                    LinkedList<Change<U>> top = getChangeChain(i-1, j);
+                    LinkedList<Change<U>> corner = getChangeChain(i-1, j-1);
                     
                     if (corner.size() <= top.size() && corner.size() <= left.size()) {
                         result = new LinkedList<>(corner);
-                        result.add(Change.update(skipped+i-1, generator.apply(values.get(j-1)))); //TODO add an updater function, instead of calling generator
+                        result.add(Change.update(skipped+i-1, values.get(j-1)));
                     } else if (left.size() <= top.size()) {
                         result = new LinkedList<>(left);
-                        result.add(Change.insert(skipped+i, generator.apply(values.get(j-1))));
+                        result.add(Change.insert(skipped+i, values.get(j-1)));
                     } else {
                         result = new LinkedList<>(top);
                         result.add(Change.delete(skipped+i-1));
@@ -134,7 +126,7 @@ class LevenshteinMatrix<T,U> {
      * @return minimum list of changes
      * @see #getChangeChain(int, int) 
      */
-    public LinkedList<Change<T>> getChangeChain() {
+    public LinkedList<Change<U>> getChangeChain() {
         return this.getChangeChain(origin.size(), values.size());
     }
     

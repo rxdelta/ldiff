@@ -1,5 +1,5 @@
 # Introduction
-this library is for calculating minimum changes of two collection in java using **Levenshtin** algorithm.
+this library is for calculating minimum changes of two collection in java using **Levenshtein** algorithm.
 
 # Usage
 here's two sample for using this api
